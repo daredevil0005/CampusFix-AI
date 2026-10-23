@@ -1,11 +1,17 @@
 # 🏫 CampusFix-AI
 ### AI-Powered Campus Maintenance & Complaint Management System
 
-CampusFix-AI is an AI-assisted campus maintenance platform that simplifies how students and campus members report maintenance issues. Powered by **Google Gemini**, it transforms natural-language complaints into structured maintenance tickets, helping campus staff organize, prioritize, and manage reported problems efficiently.
+**CampusFix-AI** is an AI-assisted campus maintenance platform that simplifies how students and campus members report maintenance issues. Powered by **Google Gemini**, it transforms natural-language complaints into structured maintenance tickets, helping campus staff organize, prioritize, and manage reported problems efficiently.
 
 Built as a hackathon project with a focus on practical AI integration, security, and usability.
 
----
+## 🌐 Live Demo
+
+**Try CampusFix-AI here:**
+
+🔗 https://campusfix-ai-92p0.onrender.com
+
+> The hosted demo may take a little time to wake up after inactivity.
 
 ## ✨ Features
 
@@ -20,8 +26,6 @@ Built as a hackathon project with a focus on practical AI integration, security,
 - **Admin Authentication:** Password-hash-based staff login.
 - **AI Fallback:** Maintains basic complaint submission functionality when AI processing is unavailable.
 
----
-
 ## 🧠 How It Works
 
 1. A user submits a campus maintenance complaint and location.
@@ -32,8 +36,6 @@ Built as a hackathon project with a focus on practical AI integration, security,
 6. Campus staff can review, assign, update, and resolve tickets through the dashboard.
 
 **AI is advisory:** Priority assignment and privileged operations are handled by backend logic rather than being delegated to Gemini.
-
----
 
 ## 🛠️ Tech Stack
 
@@ -48,24 +50,19 @@ Built as a hackathon project with a focus on practical AI integration, security,
 | Werkzeug | Password hashing and request utilities |
 | python-dotenv | Local environment configuration |
 
----
-
 ## 📂 Project Structure
 
 ```text
 CampusFix-AI/
-│
 ├── app.py
 ├── requirements.txt
 ├── .env.example
 ├── .gitignore
 ├── Procfile
 ├── README.md
-│
 ├── static/
 │   ├── app.js
 │   └── style.css
-│
 ├── templates/
 │   ├── base.html
 │   ├── home.html
@@ -73,18 +70,15 @@ CampusFix-AI/
 │   ├── submitted.html
 │   ├── ticket.html
 │   └── admin.html
-│
 └── tests/
     └── test_app.py
 ```
-
----
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-- Python 3.10+ (use a version compatible with your installed dependencies)
+- Python 3.10+ (use a version compatible with your dependencies)
 - Git
 - Google Gemini API key
 - pip
@@ -105,8 +99,6 @@ python -m venv venv
 .\venv\Scripts\Activate.ps1
 ```
 
-If PowerShell blocks activation, you can run the application using the virtual environment's Python executable directly.
-
 ### 3. Install dependencies
 
 ```bash
@@ -121,7 +113,7 @@ Create your local `.env` file:
 Copy-Item .env.example .env
 ```
 
-Generate a strong Flask secret key:
+Generate a Flask secret key:
 
 ```powershell
 python -c "import secrets; print(secrets.token_hex(32))"
@@ -133,7 +125,7 @@ Generate an admin password hash:
 python -c "from werkzeug.security import generate_password_hash; print(generate_password_hash(input('New admin password: ')))"
 ```
 
-Open `.env` and configure:
+Configure `.env`:
 
 ```env
 SECRET_KEY=your_generated_secret_key
@@ -145,7 +137,7 @@ COOKIE_SECURE=false
 TRUST_PROXY=0
 ```
 
-Replace the placeholder values with your own credentials.
+Replace the placeholders with your own values.
 
 **Security:** Never commit `.env` or expose your API key, password, or secret key.
 
@@ -155,11 +147,7 @@ Replace the placeholder values with your own credentials.
 python app.py
 ```
 
-Open the application:
-
-http://127.0.0.1:5000
-
----
+Open http://127.0.0.1:5000
 
 ## 🖥️ Application Usage
 
@@ -174,7 +162,7 @@ http://127.0.0.1:5000
 ### For Campus Staff
 1. Navigate to `/admin/login`.
 2. Sign in using the configured admin password.
-3. Review reported maintenance tickets.
+3. Review maintenance tickets.
 4. Search and filter tickets.
 5. Update ticket status and assignee.
 
@@ -183,8 +171,6 @@ Available ticket statuses:
 - In Progress
 - Resolved
 - Closed
-
----
 
 ## 🔐 Security Considerations
 
@@ -196,21 +182,19 @@ Available ticket statuses:
 - User-submitted content should be treated as untrusted input.
 - Gemini output is not trusted for priority decisions or privileged operations.
 
-**Production deployment:** Use HTTPS, secure cookie settings, strong secrets, and an appropriate persistent database. Configure environment variables through the hosting platform rather than committing credentials.
+**Production deployment:** Use HTTPS, secure secrets, appropriate access controls, and persistent database storage. Configure environment variables through the hosting platform.
 
----
+**Demo limitation:** The hosted application uses SQLite unless configured otherwise. On ephemeral hosting storage, tickets may be lost after restarts or redeployments. Use persistent storage or a production database for ongoing use.
 
 ## 🧪 Testing
 
-Run the test suite with:
+Run the test suite:
 
 ```bash
 python -m pytest -q
 ```
 
-Make sure the test dependencies are installed before running tests.
-
----
+Ensure the test dependencies are installed first.
 
 ## 🌱 Future Improvements
 
@@ -222,15 +206,11 @@ Make sure the test dependencies are installed before running tests.
 - Improved audit logs and reporting.
 - Production-ready database deployment.
 
----
-
 ## 🎯 Project Goal
 
 CampusFix-AI aims to bridge the gap between human-reported campus problems and structured maintenance workflows through practical AI-assisted automation.
 
 It demonstrates how generative AI can improve real-world processes while keeping critical application decisions under backend control.
-
----
 
 ## 👨‍💻 Developer
 
@@ -238,12 +218,9 @@ It demonstrates how generative AI can improve real-world processes while keeping
 
 **Repository:** [CampusFix-AI](https://github.com/daredevil0005/CampusFix-AI)
 
+**Live Demo:** [Launch CampusFix-AI](https://campusfix-ai-92p0.onrender.com)
+
 ---
 
 *Built with Python, Flask, Google Gemini, and a passion for solving real-world problems.*
 
-
-- Public ticket pages intentionally omit assignee and reporter information.
-- Priority labels communicate triage rules, not a confirmed hazard. Immediate danger must be reported to campus authorities/emergency services; the app does not provide emergency response.
-- Optional photos are not enabled in this MVP.
-- Configure a persistent disk for SQLite on Render. For higher traffic or multiple instances, use managed PostgreSQL instead.
