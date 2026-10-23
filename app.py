@@ -1,12 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, abort
 from werkzeug.security import check_password_hash
 from werkzeug.middleware.proxy_fix import ProxyFix
+from dotenv import load_dotenv
 from pathlib import Path
 from datetime import datetime, timezone
 import sqlite3, os, secrets, logging
 from contextlib import contextmanager
 
+
 BASE = Path(__file__).resolve().parent
+load_dotenv(BASE / ".env")
 app = Flask(__name__)
 app.config.update(SECRET_KEY=os.getenv('SECRET_KEY', 'dev-only-change-me'), MAX_CONTENT_LENGTH=64 * 1024, SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE='Lax', SESSION_COOKIE_SECURE=os.getenv('COOKIE_SECURE', 'false').lower() == 'true')
 if os.getenv('TRUST_PROXY') == '1': app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)
