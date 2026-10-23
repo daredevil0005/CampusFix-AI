@@ -1,0 +1,1 @@
+const box=document.querySelector('#complaint'), count=document.querySelector('#count');if(box&&count){const update=()=>count.textContent=`${box.value.length} / 2000`;box.addEventListener('input',update);update()}
