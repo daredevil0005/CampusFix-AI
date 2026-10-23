@@ -88,7 +88,10 @@ def require_admin():
     if not session.get('admin'): abort(401)
 
 @app.get('/')
-def home(): return render_template('home.html')
+def home():
+    ticket_id = request.args.get('ticket', '').strip()
+    if ticket_id: return redirect(url_for('ticket', ticket_id=ticket_id))
+    return render_template('home.html')
 
 @app.post('/report')
 def report():
@@ -139,10 +142,19 @@ def dashboard():
     clause=(' WHERE '+' AND '.join(where)) if where else ''
     with db() as con:
         rows=con.execute('SELECT * FROM tickets'+clause+' ORDER BY CASE priority WHEN "Urgent" THEN 0 WHEN "High" THEN 1 ELSE 2 END, created_at DESC',args).fetchall()
-        total=con.execute('SELECT COUNT(*) FROM tickets').fetchone()[0]
-        open_count=con.execute("SELECT COUNT(*) FROM tickets WHERE status NOT IN ('Resolved','Closed')").fetchone()[0]
-        counts={p:con.execute('SELECT COUNT(*) FROM tickets WHERE priority=?',(p,)).fetchone()[0] for p in ['Urgent','High','Normal']}
-        status_counts={s:con.execute('SELECT COUNT(*) FROM tickets WHERE status=?',(s,)).fetchone()[0] for s in STATUSES}
+        metrics=con.execute('''SELECT COUNT(*) AS total,
+            COALESCE(SUM(CASE WHEN status NOT IN ('Resolved','Closed') THEN 1 ELSE 0 END),0) AS open_count,
+            COALESCE(SUM(CASE WHEN priority='Urgent' THEN 1 ELSE 0 END),0) AS urgent_count,
+            COALESCE(SUM(CASE WHEN priority='High' THEN 1 ELSE 0 END),0) AS high_count,
+            COALESCE(SUM(CASE WHEN priority='Normal' THEN 1 ELSE 0 END),0) AS normal_count,
+            COALESCE(SUM(CASE WHEN status='Submitted' THEN 1 ELSE 0 END),0) AS submitted_count,
+            COALESCE(SUM(CASE WHEN status='In Progress' THEN 1 ELSE 0 END),0) AS in_progress_count,
+            COALESCE(SUM(CASE WHEN status='Resolved' THEN 1 ELSE 0 END),0) AS resolved_count,
+            COALESCE(SUM(CASE WHEN status='Closed' THEN 1 ELSE 0 END),0) AS closed_count
+            FROM tickets''').fetchone()
+        total=metrics['total']; open_count=metrics['open_count']
+        counts={'Urgent':metrics['urgent_count'],'High':metrics['high_count'],'Normal':metrics['normal_count']}
+        status_counts={'Submitted':metrics['submitted_count'],'In Progress':metrics['in_progress_count'],'Resolved':metrics['resolved_count'],'Closed':metrics['closed_count']}
     return render_template('admin.html', tickets=rows,total=total,open_count=open_count,counts=counts,status_counts=status_counts,q=q,status=status,priority=priority)
 
 @app.post('/admin/ticket/<ticket_id>')
